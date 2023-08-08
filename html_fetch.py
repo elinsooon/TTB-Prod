@@ -5,7 +5,6 @@ url = "https://api.easi.utoronto.ca/ttb/getPageableCourses"
 
 
 def fetch(course_title, sessions):
-    session_list = []
     if sessions == "f":
         session_list = ["20239"]
     elif sessions == "s":

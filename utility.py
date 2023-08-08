@@ -1,5 +1,3 @@
-import copy
-import numpy as np
 from classes import *
 from html_fetch import fetch
 from itertools import product
@@ -161,69 +159,9 @@ def run_program(fall_cl: list[str], winter_cl: list[str], filters: FiltersPackag
         return winter_schedules
     else:
         winter_schedules.sort(key=lambda x: x.score, reverse=True)
-    # year_schedules = program_meat(year_cl, "fs", filters)
-    # if not isinstance(year_schedules, list):
-    #     return year_schedules
-    # else:
-    #     year_schedules.sort(key= lambda x: x.score, reverse=True)
 
     fall_scores = dict(Counter(x.score for x in fall_schedules))
     winter_scores = dict(Counter(x.score for x in winter_schedules))
-
-    print(fall_scores)
-    print(winter_scores)
-
-    # fall_temp = []
-    # if fall_schedules:
-    #     fall_best_score = list(fall_scores.keys())[0]
-    #     fall_temp = [sch for sch in fall_schedules if sch.score == fall_best_score]
-    # fall_bests = fall_temp
-    #
-    # winter_temp = []
-    # if winter_schedules:
-    #     winter_best_score = list(winter_scores.keys())[0]
-    #     winter_temp = [sch for sch in winter_schedules if sch.score == winter_best_score]
-    # winter_bests = winter_temp
-
-    # make all fall/year combos, sort by score, try all winter combos sorted by score
-
-    # if year_schedules:
-    #     return_schedules = []
-    #     for year_sched in year_schedules:
-    #         year_list = []
-    #         for fall_sched in fall_schedules:
-    #             if not (year_sched.schedule*fall_sched.schedule == 0).all():
-    #                 continue
-    #             else:
-    #                 fall_year_schedule = combine_schedules(fall_sched, year_sched, filters)
-    #                 year_list.append(fall_year_schedule)
-    #         year_list.sort(key=lambda x: x.score, reverse=True)
-    #         for winter_sched in winter_schedules:
-    #             if not (year_sched.schedule*winter_sched.schedule == 0).all():
-    #                 continue
-    #             else:
-    #                 return_schedules.append()
-    #
-    #                 for winter_sched in winter_bests:
-    #                     result2 = year_sched.schedule*winter_sched.schedule
-    #                     if not (result2 == 0).all():
-    #                         continue
-    #                     else:
-    #                         return_schedules.append((fall_year_schedule, combine_schedules(year_sched, winter_sched, filters)))
-    #
-    #         for i in return_schedules:
-    #             for j in i:
-    #                 counter = 1
-    #                 j.schedule = j.schedule.astype("object")
-    #
-    #                 for section in j.section_combo:
-    #                     j.schedule[j.schedule == counter] = section.course_code + string_code(section)
-    #                     counter += 1
-    #                 j.schedule[j.schedule == 0] = ""
-    #
-    #     return return_schedules
-    #
-    # print("post-year")
 
     for i in fall_schedules:
         counter = 1
@@ -242,20 +180,7 @@ def run_program(fall_cl: list[str], winter_cl: list[str], filters: FiltersPackag
             counter += 1
         i.schedule[i.schedule == 0] = ""
 
-    print(f"time elapsed: {time.time() - t}")
     return [fall_schedules, winter_schedules]
-
-
-def combine_schedules(sched1, sched2, filters):
-    new_sched_array = sched1.schedule.copy()
-    new_sched_sections = sched1.section_combo[:]
-    counter = np.max(sched1.schedule) + 1
-    for section in sched2.section_combo:
-        new_sched_array = new_sched_array + section.times.transpose()*counter
-        new_sched_sections.append(section)
-        counter += 1
-
-    return Schedule(new_sched_array, new_sched_sections, filters)
 
 
 def program_meat(course_list: list[str], session: str, filters: FiltersPackage):
@@ -277,7 +202,6 @@ def program_meat(course_list: list[str], session: str, filters: FiltersPackage):
     courses.sort(key=lambda x: (len(x.lectures)+len(x.tutorials)))
 
     section_combos = [list(t) for t in list(product(*sections))]
-    print("check in: "+str(len(section_combos)))
     schedules = gen_schedules(section_combos, filters)
 
     if schedules[0] != []:
